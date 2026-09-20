@@ -1,9 +1,9 @@
 <?php
 
-$hostHospedagem  = "";
-$bancoHospedagem = "";
-$userHospedagem  = "";
-$passHospedagem  = "";
+$hostHospedagem  = "sql204.ezyro.com";
+$bancoHospedagem = "ezyro_42965910_metalurgica";
+$userHospedagem  = "ezyro_42965910";
+$passHospedagem  = "134679";
 
 $configs = [];
 
