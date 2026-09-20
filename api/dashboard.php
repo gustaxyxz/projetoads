@@ -3,19 +3,26 @@ include '../includes/conexao.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-try {
-    $produtos = $pdo->query("SELECT * FROM vw_analise_faturamento_produtos ORDER BY faturamento_bruto_potencial DESC")->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $produtos = $pdo->query("SELECT * FROM vw_analise_faturamento_produtos ORDER BY faturamento_bruto_potencial DESC")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        $produtos = $pdo->query("SELECT id_produto, nome_produto, categoria, preco_base, quantidade_disponivel AS estoque_atual, CASE WHEN quantidade_disponivel <= 5 THEN 'ESTOQUE CRÍTICO' ELSE 'ESTOQUE NORMAL' END AS status_estoque, 0 AS volume_total_demandado, (preco_base * quantidade_disponivel) AS faturamento_bruto_potencial FROM produtos ORDER BY faturamento_bruto_potencial DESC")->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-    $stmt = $pdo->prepare("CALL sp_dashboard_indicadores(:status, :data_inicio, :data_fim, :limite, :pagina)");
-    $stmt->execute([
-        ':status'      => null,
-        ':data_inicio' => null,
-        ':data_fim'    => null,
-        ':limite'      => 100,
-        ':pagina'      => 1,
-    ]);
-    $orcamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+    try {
+        $stmt = $pdo->prepare("CALL sp_dashboard_indicadores(:status, :data_inicio, :data_fim, :limite, :pagina)");
+        $stmt->execute([
+            ':status'      => null,
+            ':data_inicio' => null,
+            ':data_fim'    => null,
+            ':limite'      => 100,
+            ':pagina'      => 1,
+        ]);
+        $orcamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+    } catch (Throwable $e) {
+        $orcamentos = $pdo->query("SELECT * FROM orcamentos")->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     $valorTotal = array_reduce($produtos, function ($total, $produto) {
         return $total + (float) ($produto['faturamento_bruto_potencial'] ?? 0);

@@ -38,21 +38,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_status'])) {
     }
 }
 
-$orcamentos = $pdo->query(
-    "SELECT
-        o.id_orcamento,
-        o.data_solicitacao,
-        o.status,
-        c.nome AS nome_cliente,
-        c.email AS email_cliente,
-        fn_calcular_total_orcamento(o.id_orcamento) AS valor_total,
-        COUNT(oi.id_item) AS total_itens
-     FROM orcamentos o
-     INNER JOIN clientes c ON o.id_cliente = c.id_cliente
-     LEFT JOIN orcamento_itens oi ON o.id_orcamento = oi.id_orcamento
-     GROUP BY o.id_orcamento, o.data_solicitacao, o.status, c.nome, c.email
-     ORDER BY o.data_solicitacao DESC, o.id_orcamento DESC"
-)->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $orcamentos = $pdo->query(
+        "SELECT
+            o.id_orcamento,
+            o.data_solicitacao,
+            o.status,
+            c.nome AS nome_cliente,
+            c.email AS email_cliente,
+            fn_calcular_total_orcamento(o.id_orcamento) AS valor_total,
+            COUNT(oi.id_item) AS total_itens
+         FROM orcamentos o
+         INNER JOIN clientes c ON o.id_cliente = c.id_cliente
+         LEFT JOIN orcamento_itens oi ON o.id_orcamento = oi.id_orcamento
+         GROUP BY o.id_orcamento, o.data_solicitacao, o.status, c.nome, c.email
+         ORDER BY o.data_solicitacao DESC, o.id_orcamento DESC"
+    )->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    $orcamentos = $pdo->query(
+        "SELECT
+            o.id_orcamento,
+            o.data_solicitacao,
+            o.status,
+            c.nome AS nome_cliente,
+            c.email AS email_cliente,
+            COALESCE(SUM(oi.quantidade_solicitada * p.preco_base), 0.00) AS valor_total,
+            COUNT(oi.id_item) AS total_itens
+         FROM orcamentos o
+         INNER JOIN clientes c ON o.id_cliente = c.id_cliente
+         LEFT JOIN orcamento_itens oi ON o.id_orcamento = oi.id_orcamento
+         LEFT JOIN produtos p ON oi.id_produto = p.id_produto
+         GROUP BY o.id_orcamento, o.data_solicitacao, o.status, c.nome, c.email
+         ORDER BY o.data_solicitacao DESC, o.id_orcamento DESC"
+    )->fetchAll(PDO::FETCH_ASSOC);
+}
 
 $statusDisponiveis = ['Pendente', 'Aprovado', 'Em Fabricação', 'Entregue', 'Cancelado'];
 $badgesStatus = [
