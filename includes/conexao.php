@@ -1,12 +1,23 @@
 <?php
 
-$banco = "metalurgica_oliveira";
+$hostHospedagem  = "";
+$bancoHospedagem = "";
+$userHospedagem  = "";
+$passHospedagem  = "";
 
-$configs = [
-    ["host" => "localhost", "user" => "root", "pass" => ""],
-    ["host" => "127.0.0.1", "user" => "root", "pass" => ""],
-    ["host" => "192.168.56.20", "user" => "admin", "pass" => "12345"]
-];
+$configs = [];
+
+if (!empty($hostHospedagem) && !empty($bancoHospedagem)) {
+    $configs[] = [
+        "host"  => $hostHospedagem,
+        "banco" => $bancoHospedagem,
+        "user"  => $userHospedagem,
+        "pass"  => $passHospedagem
+    ];
+}
+
+$configs[] = ["host" => "localhost", "banco" => "metalurgica_oliveira", "user" => "root", "pass" => ""];
+$configs[] = ["host" => "127.0.0.1", "banco" => "metalurgica_oliveira", "user" => "root", "pass" => ""];
 
 $pdo = null;
 $ultimoErro = null;
@@ -14,7 +25,7 @@ $ultimoErro = null;
 foreach ($configs as $cfg) {
     try {
         $pdo = new PDO(
-            "mysql:host={$cfg['host']};dbname={$banco};charset=utf8mb4",
+            "mysql:host={$cfg['host']};dbname={$cfg['banco']};charset=utf8mb4",
             $cfg['user'],
             $cfg['pass'],
             [
@@ -31,5 +42,3 @@ foreach ($configs as $cfg) {
 if (!$pdo) {
     die("Erro ao conectar com o banco de dados: " . ($ultimoErro ? $ultimoErro->getMessage() : "Desconhecido"));
 }
-
-?>
