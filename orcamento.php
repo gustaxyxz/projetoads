@@ -21,7 +21,7 @@ $mensagemErro = "";
 $mensagemSucesso = "";
 $resultadoOrcamento = null;
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if (($_SERVER["REQUEST_METHOD"] ?? "") === "POST") {
     $quantidadeFloat = floatval($quantidade);
 
     if (trim($nomeCliente) === "" || trim($telefoneCliente) === "" || trim($emailCliente) === "") {

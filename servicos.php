@@ -48,11 +48,8 @@ if ($filtroPreco !== '' && is_numeric($filtroPreco)) {
     <p class="lead">Conheça nossos produtos a pronta entrega.</p>
 
     <?php if ($mensagemValidacao !== "OK") { ?>
-        <!-- Exibe o erro da validação de negócio se houver problema no array -->
         <div class="alert alert-warning"><?php echo $mensagemValidacao; ?></div>
     <?php } else { ?>
-
-        <!-- Formulário de Filtro -->
         <form method="GET" action="servicos.php" class="row g-3 mb-5 bg-light p-3 rounded shadow-sm align-items-end">
             <div class="col-md-4">
                 <label class="form-label fw-bold">Qual o seu orçamento ideal?</label>
@@ -101,7 +98,6 @@ if ($filtroPreco !== '' && is_numeric($filtroPreco)) {
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 pt-0">
-                        <!-- Leva o ID do produto via URL para a página de orçamento para facilitar pro cliente -->
                         <a href="orcamento.php?produto_id=<?php echo $produto["id_produto"]; ?>" class="btn btn-warning w-100 fw-bold">Solicitar Orçamento</a>
                     </div>
                 </div>

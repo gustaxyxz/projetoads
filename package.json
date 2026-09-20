@@ -1,0 +1,25 @@
+{
+  "name": "projeto-ads",
+  "version": "1.0.0",
+  "description": "Projeto acadêmico desenvolvido para apresentação em ambiente local com XAMPP.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustaxyxz/meuprojeto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gustaxyxz/meuprojeto/issues"
+  },
+  "homepage": "https://github.com/gustaxyxz/meuprojeto#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
